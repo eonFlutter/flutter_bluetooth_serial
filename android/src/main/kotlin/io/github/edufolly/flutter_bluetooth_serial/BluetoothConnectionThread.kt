@@ -8,17 +8,34 @@ import java.io.OutputStream
 /**
  * @author Eduardo Folly
  */
+
+/**
+ * 蓝牙连接线程类
+ * 负责处理具体的数据收发
+ */
 class BluetoothConnectionThread(
     private val socket: BluetoothSocket,
     private val onRead: (data: ByteArray) -> Unit,
     private val onDisconnected: (byRemote: Boolean) -> Unit,
 ) : Thread() {
+    // 输入流,用于接收数据
     private var input: InputStream = socket.inputStream
+    
+    // 输出流,用于发送数据
     private var output: OutputStream = socket.outputStream
+    
+    // 是否请求关闭连接
     private var requestedClosing = false
 
+    /**
+     * 检查是否已请求关闭连接
+     */
     fun isRequestedClosing(): Boolean = requestedClosing
 
+    /**
+     * 线程运行函数
+     * 循环读取输入流中的数据
+     */
     override fun run() {
         val buffer = ByteArray(1024)
         var bytes: Int
@@ -56,11 +73,19 @@ class BluetoothConnectionThread(
         }
     }
 
+    /**
+     * 发送数据
+     * @param bytes 要发送的字节数组
+     */
     fun write(bytes: ByteArray) {
         // TODO: Really need to catch exceptions?
         output.write(bytes)
     }
 
+    /**
+     * 取消连接
+     * 关闭socket和输入输出流
+     */
     fun cancel() {
         if (requestedClosing) return
 

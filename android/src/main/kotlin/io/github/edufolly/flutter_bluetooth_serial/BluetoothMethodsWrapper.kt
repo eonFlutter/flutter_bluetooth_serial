@@ -170,6 +170,9 @@ class BluetoothMethodsWrapper(
         callback(true)
     }
 
+    /**
+     * 处理Flutter端发来的方法调用
+     */
     @SuppressLint("MissingPermission", "HardwareIds", "PrivateApi")
     @Suppress("DEPRECATION")
     override fun onMethodCall(
@@ -830,6 +833,9 @@ class BluetoothMethodsWrapper(
         }
     }
 
+    /**
+     * 获取蓝牙设备对象
+     */
     private fun getDevice(
         call: MethodCall,
         result: Result,
@@ -858,6 +864,9 @@ class BluetoothMethodsWrapper(
         return bluetoothAdapter?.getRemoteDevice(address)
     }
 
+    /**
+     * 根据ID获取连接对象
+     */
     private fun getConnectionById(
         call: MethodCall,
         result: Result,

@@ -11,6 +11,9 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 const val TAG = "FlutterBluetoothPlugin"
 const val NAMESPACE = "flutter_bluetooth_serial"
 
+/**
+ * 检查设备是否已连接
+ */
 fun checkIsDeviceConnected(device: BluetoothDevice?): Boolean =
     try {
         device
@@ -24,17 +27,27 @@ fun checkIsDeviceConnected(device: BluetoothDevice?): Boolean =
     }
 
 /**
- * @author Eduardo Folly
+ * Flutter蓝牙串行通信插件主类
+ * 负责初始化和管理各个功能模块
  */
 class FlutterBluetoothSerialPlugin :
     FlutterPlugin,
     ActivityAware {
+    // 存储所有活动的蓝牙连接
     private val connections = mutableMapOf<String, BluetoothConnectionWrapper>()
 
+    // 设备发现包装器
     private lateinit var discoveryWrapper: BluetoothDiscoveryWrapper
+    
+    // 状态监听包装器
     private lateinit var stateWrapper: BluetoothStateWrapper
+    
+    // 方法调用包装器
     private lateinit var methodsWrapper: BluetoothMethodsWrapper
 
+    /**
+     * 插件绑定到Flutter引擎时调用
+     */
     override fun onAttachedToEngine(
         flutterPluginBinding: FlutterPlugin.FlutterPluginBinding,
     ) {
@@ -49,6 +62,9 @@ class FlutterBluetoothSerialPlugin :
         methodsWrapper = BluetoothMethodsWrapper(messenger, connections)
     }
 
+    /**
+     * 插件从Flutter引擎解绑时调用
+     */
     override fun onDetachedFromEngine(
         binding: FlutterPlugin.FlutterPluginBinding,
     ) {
@@ -59,6 +75,9 @@ class FlutterBluetoothSerialPlugin :
         methodsWrapper.close()
     }
 
+    /**
+     * 插件绑定到Activity时调用
+     */
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         val activity = binding.activity
 

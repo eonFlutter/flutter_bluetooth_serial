@@ -17,21 +17,30 @@ import io.flutter.plugin.common.EventChannel.StreamHandler
 /**
  * @author Eduardo Folly
  */
+/**
+ * 蓝牙设备发现包装类
+ * 用于处理蓝牙设备的搜索和发现
+ */
 class BluetoothDiscoveryWrapper(
     messenger: BinaryMessenger,
 ) : BroadcastReceiver(),
     StreamHandler {
+    // 设备发现事件通道
     private val discoveryChannel =
         EventChannel(messenger, "$NAMESPACE/discovery").also {
             it.setStreamHandler(this)
         }
 
+    // 用于向Flutter发送发现的设备信息
     private var discoverySink: EventSink? = null
 
     private lateinit var activity: Activity
 
     private var bluetoothAdapter: BluetoothAdapter? = null
 
+    /**
+     * 配置必要的参数
+     */
     fun config(
         activity: Activity,
         bluetoothAdapter: BluetoothAdapter?,
@@ -40,6 +49,9 @@ class BluetoothDiscoveryWrapper(
         this.bluetoothAdapter = bluetoothAdapter
     }
 
+    /**
+     * 关闭发现通道
+     */
     fun close() {
         discoveryChannel.setStreamHandler(null)
     }
@@ -59,6 +71,9 @@ class BluetoothDiscoveryWrapper(
         discoverySink = null
     }
 
+    /**
+     * 接收蓝牙广播事件
+     */
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
     override fun onReceive(
@@ -117,6 +132,9 @@ class BluetoothDiscoveryWrapper(
         }
     }
 
+    /**
+     * 停止设备发现
+     */
     @SuppressLint("MissingPermission")
     fun stopDiscovery() {
         Log.d(TAG, "Stopping bluetooth discovery.")
@@ -132,6 +150,9 @@ class BluetoothDiscoveryWrapper(
         discoverySink = null
     }
 
+    /**
+     * 开始设备发现
+     */
     @SuppressLint("MissingPermission")
     fun startDiscovery() {
         Log.d(TAG, "Starting bluetooth discovery.")

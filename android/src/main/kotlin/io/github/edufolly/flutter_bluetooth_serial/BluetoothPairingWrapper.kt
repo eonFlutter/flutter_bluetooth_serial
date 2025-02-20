@@ -17,6 +17,9 @@ class BluetoothPairingWrapper : BroadcastReceiver() {
     private lateinit var activity: Activity
     private lateinit var methodChannel: MethodChannel
 
+    /**
+     * 配置必要的参数
+     */
     fun config(
         activity: Activity,
         methodChannel: MethodChannel,
@@ -28,6 +31,9 @@ class BluetoothPairingWrapper : BroadcastReceiver() {
     fun close() {
     }
 
+    /**
+     * 接收配对请求广播
+     */
     @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
     override fun onReceive(
@@ -178,6 +184,9 @@ class BluetoothPairingWrapper : BroadcastReceiver() {
         }
     }
 
+    /**
+     * 内部结果回调类
+     */
     private class InternalResult(
         val onSuccess: (handlerResult: Any?) -> Unit,
     ) : Result {

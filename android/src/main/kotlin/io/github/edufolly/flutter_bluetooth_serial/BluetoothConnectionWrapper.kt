@@ -12,6 +12,10 @@ import io.flutter.plugin.common.EventChannel.StreamHandler
 /**
  * @author Eduardo Folly
  */
+/**
+ * 蓝牙连接包装类
+ * 用于桥接Flutter端和原生蓝牙连接
+ */
 class BluetoothConnectionWrapper(
     adapter: BluetoothAdapter,
     messenger: BinaryMessenger,
@@ -20,13 +24,18 @@ class BluetoothConnectionWrapper(
     private val connections: MutableMap<String, BluetoothConnectionWrapper>,
 ) : BluetoothConnection(adapter),
     StreamHandler {
+    // 用于向Flutter发送数据的通道
     private var readSink: EventSink? = null
 
+    // 读取数据的事件通道
     private val readChannel: EventChannel =
         EventChannel(messenger, "$NAMESPACE/read/$id").also {
             it.setStreamHandler(this)
         }
 
+    /**
+     * 开始监听Flutter端的数据请求
+     */
     override fun onListen(
         obj: Any?,
         eventSink: EventSink?,
@@ -34,6 +43,9 @@ class BluetoothConnectionWrapper(
         readSink = eventSink
     }
 
+    /**
+     * 停止监听Flutter端的数据请求
+     */
     override fun onCancel(obj: Any?) {
         // If canceled by local, disconnects,
         // in other case, by remote, does nothing.
@@ -50,12 +62,18 @@ class BluetoothConnectionWrapper(
         }
     }
 
+    /**
+     * 接收到数据时的回调
+     */
     override fun onRead(data: ByteArray) {
         activity.runOnUiThread {
             readSink?.success(data)
         }
     }
 
+    /**
+     * 连接断开时的回调
+     */
     override fun onDisconnected(byRemote: Boolean) {
         activity.runOnUiThread {
             if (byRemote) {
