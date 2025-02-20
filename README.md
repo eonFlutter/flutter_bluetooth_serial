@@ -30,21 +30,6 @@ be [max up to 7 Bluetooth connections](https://stackoverflow.com/a/32149519/4880
 
 For now there is only Android support.
 
-## Funding
-
-Your contribution will help drive the development of quality tools for the
-Flutter and Dart developer community. Any amount will be appreciated. Thank you
-for your continued support!
-
-[![BuyMeACoffee](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg)](https://www.buymeacoffee.com/edufolly)
-
-## PIX
-
-Sua contribuição ajudará a impulsionar o desenvolvimento de ferramentas de
-qualidade para a comunidade de desenvolvedores Flutter e Dart. Qualquer quantia
-será apreciada. Obrigado pelo seu apoio contínuo!
-
-[![PIX](helpers/pix.png)](https://nubank.com.br/pagar/2bt2q/RBr4Szfuwr)
 
 ## Getting Started
 
@@ -120,11 +105,3 @@ Arduino HC-05 and Raspberry Pi (RFCOMM) Bluetooth interfaces.
 You might also want to
 check [milestones](https://github.com/edufolly/flutter_bluetooth_serial/milestones).
 
-## Credits
-
-- [Eduardo Folly](mailto:edufolly@gmail.com)
-- [Martin Mauch](mailto:martin.mauch@gmail.com)
-- [Patryk Ludwikowski](mailto:patryk.ludwikowski.7@gmail.com)
-
-After version 0.3.0 we have a lot of collaborators. If you would like to be
-credited, please send me an [email](mailto:edufolly@gmail.com).
