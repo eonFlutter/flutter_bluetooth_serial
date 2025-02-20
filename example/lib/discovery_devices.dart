@@ -70,9 +70,12 @@ class _DiscoveryDevicesState extends State<DiscoveryDevices> {
                                   results.remove(event);
                                 }
 
-                                setState(() {
-                                  results.add(event);
-                                });
+                                if (event.name != null && event.name!.isNotEmpty) {
+                                  setState(() {
+                                    results.add(event);
+                                  });
+                                }
+
                               },
                               cancelOnError: true,
                               onError: (final dynamic e, final StackTrace s) {
