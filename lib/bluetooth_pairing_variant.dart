@@ -1,3 +1,5 @@
+/// 蓝牙配对方式枚举
+/// 定义了不同的配对验证方式
 enum BluetoothPairingVariant {
   pin(0),
   passkey(1),
@@ -14,6 +16,9 @@ enum BluetoothPairingVariant {
 
   const BluetoothPairingVariant(this.value);
 
+  /// 将动态值解析为枚举值
+  /// @param value 要解析的值
+  /// @return 对应的枚举值,如果无法解析则返回 none
   static BluetoothPairingVariant parse(final dynamic value) {
     final int intValue =
         int.tryParse(value.toString()) ?? BluetoothPairingVariant.unknown.value;

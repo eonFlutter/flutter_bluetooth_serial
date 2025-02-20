@@ -5,6 +5,7 @@ import 'package:flutter_bluetooth_serial/bluetooth_pairing_request.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_state.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial_platform_interface.dart';
 
+/// 提供蓝牙功能的核心实现
 class FlutterBluetoothSerial {
   Stream<BluetoothState> onStateChanged() =>
       FlutterBluetoothSerialPlatform.instance.onStateChanged();

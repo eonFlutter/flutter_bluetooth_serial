@@ -2,27 +2,27 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_bond_state.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_device_type.dart';
 
-/// Represents information about the device. Could be out-of-date.
-// TODO(anyone): Add updating the info via copyWith.
+/// 表示蓝牙设备的信息类
+/// 注意:信息可能不是实时的
 @immutable
 class BluetoothDevice {
-  /// MAC address of the device or identifier for platform system
-  /// (if MAC addresses are prohibited).
+  /// 设备的MAC地址或平台系统标识符
+  /// (如果MAC地址被禁止使用)
   final String address;
 
-  /// Transmitted friendly name of the device.
+  /// 设备的友好名称
   final String? name;
 
-  /// Type of the device (Bluetooth standard type).
+  /// 设备类型(蓝牙标准类型)
   final BluetoothDeviceType type;
 
-  /// Describes is device connected.
+  /// 设备是否已连接
   final bool isConnected;
 
-  /// Bonding state of the device.
+  /// 设备的配对状态
   final BluetoothBondState bondState;
 
-  /// Construct `BluetoothDevice` with given values.
+  /// 构造函数
   const BluetoothDevice({
     required this.address,
     this.name,
@@ -31,8 +31,8 @@ class BluetoothDevice {
     this.bondState = BluetoothBondState.unknown,
   });
 
-  /// Creates `BluetoothDevice` from map.
-  /// Internally used to receive the object from platform code.
+  /// 从Map创建BluetoothDevice对象
+  /// 内部用于从平台代码接收对象
   BluetoothDevice.fromMap(final Map<dynamic, dynamic> map)
       : name = map['name']?.toString(),
         address = map['address']!.toString(),
@@ -40,7 +40,7 @@ class BluetoothDevice {
         isConnected = map['isConnected'].toString().toLowerCase() == 'true',
         bondState = BluetoothBondState.parse(map['bondState']);
 
-  /// Creates map from `BluetoothDevice`.
+  /// 将BluetoothDevice转换为Map
   Map<String, dynamic> toMap() => <String, dynamic>{
         'name': name,
         'address': address,
@@ -49,10 +49,8 @@ class BluetoothDevice {
         'bondState': bondState.name,
       };
 
-  /// Compares for equality of this and other `BluetoothDevice`.
-  ///
-  /// In fact, only `address` is compared, since this is most important
-  /// and immutable information that identifies each device.
+  /// 比较两个BluetoothDevice是否相等
+  /// 实际上只比较address,因为这是识别设备的最重要且不可变的信息
   @override
   bool operator ==(final Object other) {
     return other is BluetoothDevice && other.address == address;
@@ -61,6 +59,6 @@ class BluetoothDevice {
   @override
   int get hashCode => address.hashCode;
 
-  /// Tells whether the device is bonded (ready to secure connect).
+  /// 判断设备是否已配对(可以安全连接)
   bool get isBonded => bondState.isBonded;
 }
