@@ -11,24 +11,28 @@ import 'package:flutter_bluetooth_serial/bluetooth_state.dart';
 
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial_platform_interface.dart';
 
+/// 通过 MethodChannel 实现与平台原生代码通信的蓝牙功能类
 class MethodChannelFlutterBluetoothSerial
     extends FlutterBluetoothSerialPlatform {
+  /// 定义插件的命名空间
   static const String namespace = 'flutter_bluetooth_serial';
 
+  /// 用于监听蓝牙状态变化的事件通道
   @visibleForTesting
   final EventChannel stateChannel = const EventChannel('$namespace/state');
 
-  /// Allows monitoring the Bluetooth adapter state changes.
+  /// 监听蓝牙状态变化的流
   @override
   Stream<BluetoothState> onStateChanged() {
     return stateChannel.receiveBroadcastStream().map(BluetoothState.parse);
   }
 
+  /// 用于监听设备发现结果的事件通道
   @visibleForTesting
   final EventChannel discoveryChannel =
       const EventChannel('$namespace/discovery');
 
-  /// Receive discovery results.
+  /// 监听设备发现结果的流
   @override
   Stream<BluetoothDiscoveryResult> onDiscovery() {
     return discoveryChannel.receiveBroadcastStream().map(
@@ -37,13 +41,15 @@ class MethodChannelFlutterBluetoothSerial
         );
   }
 
+  /// 用于调用平台方法的通道
   @visibleForTesting
   final MethodChannel methodChannel = const MethodChannel('$namespace/methods');
 
-  /// Function used as pairing request handler.
+  /// 配对请求处理函数
   Future<dynamic> Function(BluetoothPairingRequest request)?
       _pairingRequestHandler;
 
+  /// 构造函数，设置方法调用处理器
   MethodChannelFlutterBluetoothSerial() {
     methodChannel.setMethodCallHandler((final MethodCall call) async {
       switch (call.method) {
@@ -62,66 +68,57 @@ class MethodChannelFlutterBluetoothSerial
     });
   }
 
-  /// Checks is the Bluetooth interface available on host device.
+  /// 检查设备是否支持蓝牙功能
   @override
   Future<bool> isAvailable() async =>
       (await methodChannel.invokeMethod<bool>('isAvailable')) ?? false;
 
-  /// Describes is the Bluetooth interface enabled on host device.
+  /// 检查蓝牙是否已启用
   @override
   Future<bool> isEnabled() async =>
       (await methodChannel.invokeMethod<bool>('isEnabled')) ?? false;
 
-  /// Opens the Bluetooth platform system settings.
+  /// 打开系统蓝牙设置页面
   @override
   Future<void> openSettings() async =>
       methodChannel.invokeMethod<void>('openSettings');
 
-  /// Tries to enable Bluetooth interface (if disabled).
-  /// Probably results in asking user for confirmation.
+  /// 请求启用蓝牙
+  /// 可能会弹出用户确认对话框
   @override
   Future<bool> requestEnable() async =>
       (await methodChannel.invokeMethod<bool>('requestEnable')) ?? false;
 
-  /// Tries to disable Bluetooth interface (if enabled).
+  /// 请求禁用蓝牙
   @override
   Future<bool> requestDisable() async =>
       (await methodChannel.invokeMethod<bool>('requestDisable')) ?? false;
 
+  /// 确保所需的蓝牙权限已获取
   @override
   Future<bool> ensurePermissions() async =>
       (await methodChannel.invokeMethod<bool>('ensurePermissions')) ?? false;
 
-  /// Returns the hardware address of the local Bluetooth adapter.
-  ///
-  /// Does not work for third party applications starting at Android 6.0.
+  /// 获取本机蓝牙地址
+  /// 注意：从Android 6.0开始，第三方应用可能无法获取MAC地址
   @override
   Future<String?> get address =>
       methodChannel.invokeMethod<String>('getAddress');
 
-  /// State of the Bluetooth adapter.
+  /// 获取当前蓝牙状态
   @override
   Future<BluetoothState> get state async => BluetoothState.parse(
         (await methodChannel.invokeMethod<int>('getState')) ?? -2,
       );
 
-  /// Returns the friendly Bluetooth name of the local Bluetooth adapter.
-  ///
-  /// This name is visible to remote Bluetooth devices.
-  ///
-  /// Does not work for third party applications starting at Android 6.0.
+  /// 获取本机蓝牙名称
+  /// 此名称对其他蓝牙设备可见
   @override
   Future<String?> get name => methodChannel.invokeMethod<String>('getName');
 
-  /// Sets the friendly Bluetooth name of the local Bluetooth adapter.
-  ///
-  /// This name is visible to remote Bluetooth devices.
-  ///
-  /// Valid Bluetooth names are a maximum of 248 bytes using UTF-8 encoding,
-  /// although many remote devices can only display the first 40 characters,
-  /// and some may be limited to just 20.
-  ///
-  /// Does not work for third party applications starting at Android 6.0.
+  /// 设置本机蓝牙名称
+  /// 名称最大长度为248字节(UTF-8编码)
+  /// 但多数远程设备只能显示前40个字符
   @override
   Future<bool> setName(final String name) async =>
       (await methodChannel.invokeMethod<bool>(
@@ -130,15 +127,14 @@ class MethodChannelFlutterBluetoothSerial
       )) ??
       false;
 
-  /// Describes is the local device in discoverable mode.
+  /// 检查设备是否可被发现
   @override
   Future<bool> isDiscoverable() async =>
       (await methodChannel.invokeMethod<bool>('isDiscoverable')) ?? false;
 
-  /// Asks for discoverable mode (prompt for user interaction in fact).
-  /// Returns number of seconds acquired or -1 if canceled or failed gracefully.
-  ///
-  /// Duration might be capped to 120, 300 or 3600 seconds on some devices.
+  /// 请求设备可被发现
+  /// 返回获得的可见时长(秒)，如果失败返回-1
+  /// 注意：某些设备可能会限制最大可见时长为120秒、300秒或3600秒
   @override
   Future<int?> requestDiscoverable({final int? durationInSeconds}) =>
       methodChannel.invokeMethod<int>(
@@ -150,22 +146,23 @@ class MethodChannelFlutterBluetoothSerial
               },
       );
 
-  /// Describes is the discovery process of Bluetooth devices running.
+  /// 检查是否正在搜索设备
   @override
   Future<bool> isDiscovering() async =>
       (await methodChannel.invokeMethod<bool>('isDiscovering')) ?? false;
 
-  /// Starts discovery.
+  /// 开始搜索蓝牙设备
   @override
   Future<bool> startDiscovery() async =>
       (await methodChannel.invokeMethod<bool>('startDiscovery')) ?? false;
 
-  /// Stops discovery.
+  /// 停止搜索蓝牙设备
   @override
   Future<bool> stopDiscovery() async =>
       (await methodChannel.invokeMethod<bool>('stopDiscovery')) ?? false;
 
-  /// Checks bond state for given address (might be from system cache).
+  /// 获取指定设备的配对状态
+  /// 可能从系统缓存中获取
   @override
   Future<BluetoothBondState> getDeviceBondState(final String address) async =>
       BluetoothBondState.parse(
@@ -175,7 +172,7 @@ class MethodChannelFlutterBluetoothSerial
         ),
       );
 
-  /// Returns list of bonded devices.
+  /// 获取已配对设备列表
   @override
   Future<List<BluetoothDevice>> getBondedDevices() async =>
       (await methodChannel.invokeMethod<List<dynamic>>('getBondedDevices'))
@@ -186,10 +183,9 @@ class MethodChannelFlutterBluetoothSerial
           .toList() ??
       <BluetoothDevice>[];
 
-  /// Removes bond with device with specified address.
-  /// Returns true if unbonded, false if canceled or failed gracefully.
-  ///
-  /// Note: May not work at every Android device!
+  /// 移除已配对设备
+  /// 返回true表示成功解除配对，false表示取消或失败
+  /// 注意：可能不是所有Android设备都支持此功能
   @override
   Future<bool> removeBondedDevice(final String address) async {
     return (await methodChannel.invokeMethod<bool>(
@@ -199,31 +195,12 @@ class MethodChannelFlutterBluetoothSerial
         false;
   }
 
-  /// Allows listening and response for incoming pairing requests.
-  ///
-  /// Various variants of pairing requests might require different returns:
-  /// * `PairingVariant.Pin` or `PairingVariant.Pin16Digits`
-  /// (prompt to enter a pin)
-  ///   - return string containing the pin for pairing
-  ///   - return `false` to reject.
-  /// * `BluetoothDevice.PasskeyConfirmation`
-  /// (user needs to confirm displayed passkey, no rewriting necessary)
-  ///   - return `true` to accept, `false` to reject.
-  ///   - there is `passkey` parameter available.
-  /// * `PairingVariant.Consent`
-  /// (just prompt with device name to accept without any code or passkey)
-  ///   - return `true` to accept, `false` to reject.
-  ///
-  /// If returned null, the request will be passed for manual pairing
-  /// using default Android Bluetooth settings pairing dialog.
-  ///
-  /// Note: Accepting request variant of `PasskeyConfirmation` and `Consent`
-  /// will probably fail, because it require Android `setPairingConfirmation`
-  /// which requires `BLUETOOTH_PRIVILEGED` permission that 3rd party apps
-  /// cannot acquire (at least on newest Androids) due to security reasons.
-  ///
-  /// Note: It is necessary to return from handler within 10 seconds, since
-  /// Android BroadcastReceiver can wait safely only up to that duration.
+  /// 设置配对请求处理器
+  /// 用于处理不同类型的配对请求：
+  /// * PIN码输入
+  /// * 密钥确认
+  /// * 简单同意配对
+  /// 注意：某些配对方式可能需要系统权限，第三方应用可能无法使用
   @override
   void setPairingRequestHandler(
     final Future<dynamic> Function(BluetoothPairingRequest request)? handler,
@@ -241,15 +218,10 @@ class MethodChannelFlutterBluetoothSerial
     _pairingRequestHandler = handler;
   }
 
-  /// Starts outgoing bonding (pairing) with device with given address.
-  /// Returns true if bonded, false if canceled or failed gracefully.
-  ///
-  /// `pin` or `passkeyConfirm` could be used to automate the bonding process,
-  /// using provided pin or confirmation if necessary. Can be used only if no
-  /// pairing request handler is already registered.
-  ///
-  /// Note: `passkeyConfirm` will probably not work, since 3rd party apps cannot
-  /// get `BLUETOOTH_PRIVILEGED` permission (at least on newest Androids).
+  /// 与指定设备配对
+  /// [pin] 可选的PIN码
+  /// [passkeyConfirm] 是否需要确认配对密钥
+  /// 注意：自动确认配对可能需要系统权限
   @override
   Future<bool> bondDevice(
     final String address, {
@@ -276,7 +248,7 @@ class MethodChannelFlutterBluetoothSerial
           return passkeyConfirm;
         }
 
-        // Other pairing variant used, cannot automate
+        // 其他配对方式，无法自动处理
         return null;
       });
     }
@@ -288,6 +260,7 @@ class MethodChannelFlutterBluetoothSerial
         false;
   }
 
+  /// 连接到指定的蓝牙设备
   @override
   Future<String> connect(final String address) async {
     return await methodChannel.invokeMethod(
@@ -299,6 +272,7 @@ class MethodChannelFlutterBluetoothSerial
 
   // TODO(edufolly): Write
 
+  /// 断开与指定设备的连接
   @override
   Future<void> disconnect(final String id) {
     return methodChannel.invokeMethod(
