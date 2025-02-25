@@ -5,12 +5,17 @@ import 'package:flutter_bluetooth_serial/bluetooth_device.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_discovery_result.dart';
 import 'package:folly_fields/widgets/folly_dialogs.dart';
 
+/// 单个设备cell
+/// 蓝牙设备列表项组件
+/// 显示单个蓝牙设备的信息和连接状态
 class BluetoothDeviceTile extends StatelessWidget {
   final BluetoothDevice device;
   final Future<bool> Function(BluetoothDevice device) removeBondedDevice;
   final void Function(BluetoothDevice device)? onTap;
   final Future<bool> Function(BluetoothDevice device)? bondDevice;
 
+  /// 构造函数
+  /// @param device 蓝牙设备对象
   const BluetoothDeviceTile(
     this.device, {
     required this.removeBondedDevice,

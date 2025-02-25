@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_device.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
+/// 设备连接页面
 class ConnectDevice extends StatefulWidget {
   final BluetoothDevice device;
 
@@ -13,8 +14,7 @@ class ConnectDevice extends StatefulWidget {
 }
 
 class _ConnectDeviceState extends State<ConnectDevice> {
-  final FlutterBluetoothSerial _flutterBluetoothSerialPlugin =
-      FlutterBluetoothSerial();
+  final FlutterBluetoothSerial _flutterBluetoothSerialPlugin = FlutterBluetoothSerial();
 
   String? _id;
 
@@ -44,8 +44,20 @@ class _ConnectDeviceState extends State<ConnectDevice> {
               onPressed: _id != null
                   ? null
                   : () async {
-                      final String id = await _flutterBluetoothSerialPlugin
-                          .connect(widget.device.address);
+                      final String id = await _flutterBluetoothSerialPlugin.connect(widget.device.address);
+
+                      // 监听数据
+                      // _flutterBluetoothSerialPlugin.onRead(id).listen(
+                      //       (Uint8List data) {
+                      //     print('收到数据: ${String.fromCharCodes(data)}');
+                      //   },
+                      //   onError: (error) {
+                      //     print('接收错误: $error');
+                      //   },
+                      //   onDone: () {
+                      //     print('连接已关闭');
+                      //   },
+                      // );
 
                       if (kDebugMode) {
                         print('Id: $id');
@@ -56,7 +68,7 @@ class _ConnectDeviceState extends State<ConnectDevice> {
               child: const Text('Connect'),
             ),
 
-            // Disconnect
+            // 断开连接
             ElevatedButton(
               onPressed: _id == null
                   ? null

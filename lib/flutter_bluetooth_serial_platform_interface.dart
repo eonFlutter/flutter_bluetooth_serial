@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bluetooth_serial/bluetooth_bond_state.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_device.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_discovery_result.dart';
@@ -158,4 +160,17 @@ abstract class FlutterBluetoothSerialPlatform extends PlatformInterface {
   Future<void> disconnect(final String id) {
     throw UnimplementedError('disconnect() has not been implemented.');
   }
+
+
+  // /// 发送数据到指定的蓝牙连接
+  // Future<bool> write(final String id, final Uint8List data) {
+  //   throw UnimplementedError('write() has not been implemented.');
+  // }
+  //
+  // /// 监听指定连接的数据接收
+  // Stream<Uint8List> onRead(final String id) {
+  //   throw UnimplementedError('onRead() has not been implemented.');
+  // }
+
+
 }

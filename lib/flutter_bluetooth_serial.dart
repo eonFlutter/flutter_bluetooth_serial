@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bluetooth_serial/bluetooth_bond_state.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_device.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_discovery_result.dart';
@@ -115,9 +117,23 @@ class FlutterBluetoothSerial {
   Future<String> connect(final String address) async =>
       FlutterBluetoothSerialPlatform.instance.connect(address);
 
+
   // TODO(edufolly): Write
 
   /// 断开与指定设备的连接
   Future<void> disconnect(final String id) =>
       FlutterBluetoothSerialPlatform.instance.disconnect(id);
+
+  // /// 发送数据到指定的蓝牙连接
+  // /// [id] 连接ID
+  // /// [data] 要发送的数据
+  // Future<bool> write(final String id, final Uint8List data) =>
+  //     FlutterBluetoothSerialPlatform.instance.write(id, data);
+  //
+  // /// 监听指定连接的数据接收
+  // /// [id] 连接ID
+  // /// 返回一个包含接收数据的Stream
+  // Stream<Uint8List> onRead(final String id) =>
+  //     FlutterBluetoothSerialPlatform.instance.onRead(id);
+
 }

@@ -5,7 +5,7 @@ insert_final_newline = true
 
 [{*.kt,*.kts}]
 ident_size = 4
-max_line_length = 80
+max_line_length = 160
 ktlint_code_style = ktlint_official
 ktlint_experimental = enabled
 ktlint_standard_no-wildcard-imports = disabled

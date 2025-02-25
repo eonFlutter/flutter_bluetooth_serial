@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_bond_state.dart';
@@ -280,4 +280,25 @@ class MethodChannelFlutterBluetoothSerial
       <String, dynamic>{'id': id},
     );
   }
+
+
+  // /// 发送数据到指定的蓝牙连接
+  // @override
+  // Future<bool> write(final String id, final Uint8List data) async {
+  //   return await methodChannel.invokeMethod(
+  //     'write',
+  //     <String, dynamic>{
+  //       'id': id,
+  //       'data': data,
+  //     },
+  //   ) ?? false;
+  // }
+  //
+  // /// 监听指定连接的数据接收
+  // @override
+  // Stream<Uint8List> onRead(final String id) {
+  //   final EventChannel channel = EventChannel('$namespace/input.$id');
+  //   return channel.receiveBroadcastStream().map((dynamic data) => data as Uint8List);
+  // }
+
 }

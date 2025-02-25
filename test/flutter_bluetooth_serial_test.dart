@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bluetooth_serial/bluetooth_bond_state.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_device.dart';
 import 'package:flutter_bluetooth_serial/bluetooth_discovery_result.dart';
@@ -106,6 +108,20 @@ class MockFlutterBluetoothSerialPlatform
 
   @override
   Future<void> disconnect(final String id) => Future<void>.value();
+
+  // @override
+  // Stream<Uint8List> onRead(final String id) {
+  //   // 模拟接收数据流
+  //   return Stream<Uint8List>.value(
+  //       Uint8List.fromList(<int>[1, 2, 3, 4, 5]),
+  //   );
+  // }
+  //
+  // @override
+  // Future<bool> write(final String id, final Uint8List data) {
+  //   // 模拟发送数据成功
+  //   return Future<bool>.value(true);
+  // }
 }
 
 void main() {

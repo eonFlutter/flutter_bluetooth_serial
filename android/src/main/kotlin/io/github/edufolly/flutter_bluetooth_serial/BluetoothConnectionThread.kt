@@ -44,7 +44,9 @@ class BluetoothConnectionThread(
             try {
                 bytes = input.read(buffer)
                 if (bytes > 0) {
-                    onRead(buffer.copyOfRange(0, bytes))
+                    val receivedData = buffer.copyOfRange(0, bytes)
+                    println("原始字节数据: ${receivedData.joinToString(", ")}")
+                    onRead(receivedData)
                 }
             } catch (e: IOException) {
                 // `input.read` throws when closed by remote device.

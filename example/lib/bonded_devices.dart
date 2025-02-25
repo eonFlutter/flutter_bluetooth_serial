@@ -6,6 +6,7 @@ import 'package:flutter_bluetooth_serial_example/connect_device.dart';
 
 import 'package:folly_fields/util/safe_builder.dart';
 
+/// 已配对设备列表页面 - 这里可以连接设备、删除配对（连接）
 class BondedDevices extends StatefulWidget {
   const BondedDevices({super.key});
 
@@ -14,8 +15,7 @@ class BondedDevices extends StatefulWidget {
 }
 
 class _BondedDevicesState extends State<BondedDevices> {
-  final FlutterBluetoothSerial _flutterBluetoothSerialPlugin =
-      FlutterBluetoothSerial();
+  final FlutterBluetoothSerial _flutterBluetoothSerialPlugin = FlutterBluetoothSerial();
 
   @override
   Widget build(final BuildContext context) {
@@ -41,15 +41,16 @@ class _BondedDevicesState extends State<BondedDevices> {
               return ListView.builder(
                 itemCount: data.length,
                 itemBuilder: (final BuildContext context, final int index) {
+
                   return BluetoothDeviceTile(
                     data[index],
-                    onTap: (final BluetoothDevice device) =>
-                        Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (final BuildContext context) =>
-                            ConnectDevice(device),
-                      ),
-                    ),
+                    onTap: (final BluetoothDevice device) { /// 点击设备导航到设备连接页面
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (final BuildContext context) => ConnectDevice(device),
+                        ),
+                      );
+                    },
                     removeBondedDevice: (final BluetoothDevice device) async {
                       final bool removed = await _flutterBluetoothSerialPlugin
                           .removeBondedDevice(device.address);

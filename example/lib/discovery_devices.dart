@@ -7,6 +7,7 @@ import 'package:flutter_bluetooth_serial/bluetooth_discovery_result.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_bluetooth_serial_example/bluetooth_device_tile.dart';
 
+/// 设备扫描页面
 class DiscoveryDevices extends StatefulWidget {
   const DiscoveryDevices({super.key});
 
@@ -28,24 +29,23 @@ class _DiscoveryDevicesState extends State<DiscoveryDevices> {
     initPlatformState();
   }
 
+  /// 初始化蓝牙发现状态
+  /// 1. 检查当前蓝牙是否正在进行设备发现
+  /// 2. 同步更新UI中的发现状态
   Future<void> initPlatformState() async {
-    final bool isDiscovering =
-        await _flutterBluetoothSerialPlugin.isDiscovering();
-
-    if (!mounted) {
-      return;
+    if (mounted) {
+      final bool isDiscovering = await _flutterBluetoothSerialPlugin.isDiscovering();
+      setState(() {
+        _isDiscovering = isDiscovering;
+      });
     }
-
-    setState(() {
-      _isDiscovering = isDiscovering;
-    });
   }
 
   @override
   Widget build(final BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Discovery')),
+        appBar: AppBar(title: const Text('Discovery--1')),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -64,16 +64,20 @@ class _DiscoveryDevicesState extends State<DiscoveryDevices> {
                     : () async {
                         await _flutterBluetoothSerialPlugin.startDiscovery();
 
+                        /// 扫描设备回调
                         _flutterBluetoothSerialPlugin.onDiscovery().listen(
                               (final BluetoothDiscoveryResult event) {
                                 if (results.contains(event)) {
                                   results.remove(event);
                                 }
 
+                                /// 设备过滤
                                 if (event.name != null && event.name!.isNotEmpty) {
-                                  setState(() {
-                                    results.add(event);
-                                  });
+                                  if (event.rssi > -50) {
+                                    setState(() {
+                                      results.add(event);
+                                    });
+                                  }
                                 }
 
                               },
@@ -90,7 +94,7 @@ class _DiscoveryDevicesState extends State<DiscoveryDevices> {
 
                         await initPlatformState();
                       },
-                child: const Text('Start Discovery'),
+                child: const Text('开始扫描'),
               ),
             ),
 
@@ -105,7 +109,7 @@ class _DiscoveryDevicesState extends State<DiscoveryDevices> {
 
                         await initPlatformState();
                       },
-                child: const Text('Stop Discovery'),
+                child: const Text('停止扫描'),
               ),
             ),
 
